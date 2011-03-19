@@ -7,53 +7,43 @@ function drawBackground() {
     a.fillRect(0, 0, 300, 75)
 }
 
-function initPattern() {
-    a.fillStyle = "#b57f53"
-    a.fillRect(0, 0, 230, 20)
-    a.fillStyle = "#7d532d"
-    a.fillRect(230, 0, 240, 20)
-    a.fillStyle = "#643811"
-    a.fillRect(240, 0, 297, 20)
-    a.fillStyle = "white"
-    a.fillRect(297, 0, 300, 20)
-    a.fillStyle = "#b8905d"
-    a.fillRect(0, 20, 230, 20)
-    a.fillStyle = "#7d532d"
-    a.fillRect(230, 20, 240, 20)
-    a.fillStyle = "#99643a"
-    a.fillRect(240, 20, 300, 20)
-    pattern = a.getImageData(0, 0, 300, 40)
+function drawline(y, colors, shift, scale) {    
+    a.save()
+    a.translate(150, 0)
+    
+    a.fillStyle = colors[0]
+    a.fillRect(-150, y, 300, 1)
+    
+    a.fillStyle = colors[2]
+    var x = -35*scale+shift
+    var l = 70*scale
+    a.fillRect(x, y, l, 1)
+
+    a.fillStyle = colors[1]
+    var x = -30*scale+shift
+    var l = 60*scale
+    a.fillRect(x, y, l, 1)
+    
+    a.restore()
 }
 
-function drawline(y, line, shift, scale) {
-    var target = a.createImageData(300, 1)
-    var dy = line*300*4;
-    var dx = 299;
-    for (var i=149; i>=0; i--) {
-        pixel = dy + (~~dx)*2*4
-        target.data[i*4] = pattern.data[pixel];
-        target.data[i*4+1] = pattern.data[pixel+1];
-        target.data[i*4+2] = pattern.data[pixel+2];
-        target.data[i*4+3] = pattern.data[pixel+3];
-        
-        target.data[(299-i)*4] = pattern.data[pixel];
-        target.data[(299-i)*4+1] = pattern.data[pixel+1];
-        target.data[(299-i)*4+2] = pattern.data[pixel+2];
-        target.data[(299-i)*4+3] = pattern.data[pixel+3];
-        dx -= scale;
-    }
-    a.putImageData(target, 0, y)
-}
-
-initPattern()
 drawBackground()
 
 setInterval(function() {
-    tick = ~~(new Date() / 10);
-    var scale = 0.2;
+    var tick = ~~(new Date() / 10);
+    var offset = tick%40
+    var e = 90;
+    var h = 0;
+    var scale = 4;
     for (var i=149; i>=75; i--) {
-        drawline(i, (200-i+tick)%39, 0, scale)
-//        console.log(scale)
-        scale += 0.0108
+        var d = h*e/(e-h)        
+        var shade = d/450
+        var colors = (offset + d) % 40 < 20 
+            ? ["hsl(26, " + (40 - shade*40)+ "%, 52%)", "hsl(28, "+(73-shade*73)+"%, 23%)"] 
+            : ["hsl(34, "+(39 - shade*39)+"%, 54%)", "hsl(27, "+(45-shade*45)+"%, 41%)"];
+        colors[2] = "hsl(29, "+(47 - shade*47)+"%, 33%)"
+        drawline(i, colors, Math.cos((h+tick)/ 40)*25, scale)
+        h++
+        scale -= 0.048
     }
 }, 0);
