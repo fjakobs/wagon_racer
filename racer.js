@@ -16,13 +16,9 @@ M = [99]
 m(50, 50, 512)
 M[512] = 99
 function m(y1, y2, l) {    
-    if (l<=1)
-        return M.push(y1)
-        
     var l2 = l/2
     var y = (y1+y2+Ma.random()*l2-l/4) / 2
-    m(y1, y, l/2)
-    m(y, y2, l/2)
+    l<=1 ? M.push(y1) : (m(y1, y, l2), m(y, y2, l2))
 }
 
 setInterval(function() {

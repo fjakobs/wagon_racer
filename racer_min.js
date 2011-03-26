@@ -1,9 +1,7 @@
 function l(a, b, c) {
-    if (c <= 1) return M.push(a);
     var d = c / 2,
     e = (a + b + j.random() * d - c / 4) / 2;
-    l(a, e, c / 2),
-    l(e, b, c / 2)
+    c <= 1 ? M.push(a) : (l(a, e, c / 2), l(e, b, c / 2))
 }
 b = 40,
 c = 150,
